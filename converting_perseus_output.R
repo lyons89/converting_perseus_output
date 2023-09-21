@@ -22,10 +22,13 @@ Protein = unFiltered %>%
         "GN="))) %>%
   dplyr::select(., any_of(c("Accession", "Description", "Gene", "Coverage [%]", "# Peptides",
                             "# Unique Peptides", "# PSMs", "MW [kDa]")), 
-                starts_with("Scaled"), starts_with("Norm"))
+                starts_with("Scaled"), starts_with("Norm")) %>%
+  mutate(., across(starts_with("scaled"), ~replace(., is.nan(.x), 0))) %>%
+  mutate(., across(starts_with("Norm"), ~replace(., is.nan(.x), NA))) 
 
 protein_norm = Protein %>%
-  dplyr::select(., Accession, starts_with("Norm"))
+  dplyr::select(., Accession, starts_with("Norm")) %>%
+  mutate(., across(starts_with("Norm"), ~2^.x))
 
 Imputed = imputedDf %>%
   mutate(Gene = str_trim(
