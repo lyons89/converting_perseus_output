@@ -11,14 +11,16 @@ pers_I_loc = "data/PC1159-Braunstein_no1xrev_log2_2validvalues1group_impute_ttes
 
 # read in perseus exported data
 # ignore an warning messages
+
 import_pers = function(file_loc){
   
-  firstRead = read_delim(file_loc, delim = "\t", show_col_types = FALSE, na = c("", "NaN", "NA"))
+  firstRead = read.delim(file_loc, sep = "\t", na.strings = c("", "NaN", "NA"), check.names = FALSE)
   
-  finalRead = read_delim(file_loc, delim = "\t", skip = (sum(gregexpr("#!", firstRead[,1], fixed = TRUE)[[1]]>0) +1), 
-                         col_names = names(firstRead), na = c("", "NaN", "NA"), show_col_types = FALSE)
+  finalRead = read.delim(file_loc, sep = "\t", skip = sum(grepl("#!", firstRead[,1])), 
+                         col.names = names(firstRead), na.strings = c("", "NaN", "NA"), check.names = FALSE)
   
 }
+
 
 unImputed = import_pers(file_loc = pers_NI_loc)
 imputed = import_pers(file_loc = pers_I_loc)
